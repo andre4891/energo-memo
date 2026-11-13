@@ -710,7 +710,7 @@ function checkForMatch() {
     energy += (card1.type === 'trap' ? card1.effect : card2.effect);
     updateEnergyBar();
     showToast('Ураган! -30 энергии', true);
-    unflipCards(1000);
+    unflipCards(2500); // Увеличено для неправильной пары (ловушки) до 2.5 сек
     return;
   }
 
@@ -741,13 +741,13 @@ function checkForMatch() {
     
     setTimeout(() => {
       showQuiz(pairData, cardEl1, cardEl2);
-    }, 1800); 
+    }, 2000); // Увеличено для правильной пары до 2 секунд
     
   } else {
     playSound('bad');
     energy -= 5;
     updateEnergyBar();
-    unflipCards(1000);
+    unflipCards(2500); // Увеличено для неправильной пары до 2.5 секунд
   }
 }
 
