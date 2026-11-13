@@ -6,8 +6,8 @@
 <title>ЭнергоМемо: Битва за энергию</title>
 <style>
   :root {
-    --bg-main: #e8f5e9; /* Светло-зеленый фон */
-    --text-dark: #2e7d32; /* Темно-зеленый текст */
+    --bg-main: #e8f5e9;
+    --text-dark: #2e7d32;
     --primary: #2e7d32;
     --good: #4caf50;
     --bad: #ef5350;
@@ -22,11 +22,9 @@
     color: var(--text-dark); padding: 10px; transition: background 0.3s; overflow-x: hidden;
   }
   body.danger { animation: dangerPulse 0.5s infinite alternate; }
-  @keyframes dangerPulse {
-    from { background: var(--bg-main); }
-    to { background: #ffcdd2; }
-  }
+  @keyframes dangerPulse { from { background: var(--bg-main); } to { background: #ffcdd2; } }
 
+  /* Верхняя панель */
   .header {
     width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center;
     background: #fff; padding: 10px 15px; border-radius: 15px;
@@ -35,28 +33,22 @@
   .stat span { color: var(--primary); font-size: 1.1rem;}
   .btn-restart { background: #ff7043; color: #fff; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 800; cursor: pointer; }
 
+  /* Шкала энергии */
   .energy-container { width: 100%; max-width: 500px; margin-bottom: 10px; }
   .energy-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 4px; color: var(--text-dark); }
   .energy-bar-bg { width: 100%; height: 20px; background: #c8e6c9; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
   .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--energy), #ffb300); transition: width 0.3s; }
   .energy-bar-fill.low { background: linear-gradient(90deg, var(--danger), #ff8a80); }
 
+  /* Игровое поле */
   .game-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 480px; perspective: 1000px; }
 
   .card { aspect-ratio: 3/4; position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s, filter 0.5s; }
   .card.flipped { transform: rotateY(180deg); }
   .card.matched { pointer-events: none; }
   
-  .card.matched .card-face {
-    box-shadow: 0 0 20px var(--good), 0 0 10px var(--good);
-    border-color: var(--good);
-  }
-  
-  .card.grayed .card-face {
-    filter: grayscale(1);
-    opacity: 0.5;
-    box-shadow: none;
-  }
+  .card.matched .card-face { box-shadow: 0 0 20px var(--good), 0 0 10px var(--good); border-color: var(--good); }
+  .card.grayed .card-face { filter: grayscale(1); opacity: 0.5; box-shadow: none; }
   
   .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); text-align: center; transition: box-shadow 0.3s, border-color 0.3s, filter 0.3s, opacity 0.3s; }
   
@@ -72,11 +64,10 @@
   .card-emoji { font-size: 1.6rem; margin-bottom: 4px; }
   .card-text { font-size: 0.6rem; font-weight: 800; line-height: 1.1; color: #333; }
 
-  /* Окно вопроса - более прозрачное */
+  /* Окно вопроса */
   .quiz-modal { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(232, 245, 233, 0.85);
-    backdrop-filter: blur(3px);
+    background: rgba(232, 245, 233, 0.85); backdrop-filter: blur(3px);
     display: none; flex-direction: column; justify-content: center; align-items: center; 
     z-index: 300; padding: 15px; text-align: center; color: var(--text-dark); 
   }
@@ -92,7 +83,6 @@
   .quiz-btn.correct { background: var(--good); color: #fff; border-color: var(--good); }
   .quiz-btn.wrong { background: var(--bad); color: #fff; border-color: var(--bad); }
   
-  /* Плашка с результатом ответа */
   .result-badge {
     display: none; font-size: 1.1rem; font-weight: 900; padding: 10px 20px; border-radius: 30px; margin: 10px 0;
     text-align: center; width: 100%; max-width: 350px; animation: pop 0.3s ease-out;
@@ -120,53 +110,52 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.trap { background: var(--bad); }
 
-  /* Общие модалки */
+  /* Старт и поражение */
   .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; flex-direction: column; justify-content: flex-start; align-items: center; z-index: 200; padding: 30px 20px; text-align: center; color: var(--text-dark); overflow-y: auto; }
   .modal.show { display: flex; }
   .modal h1 { font-size: 2rem; margin-bottom: 15px; color: var(--primary); }
   .modal p { font-size: 1rem; margin-bottom: 15px; line-height: 1.4; }
   .btn-start { background: var(--good); color: #fff; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: 900; border-radius: 30px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(76,175,80,0.3); }
   
-  /* Красивые блоки на старте */
-  .info-block {
-    background: #fff; border-radius: 15px; padding: 15px 20px; margin-bottom: 15px;
-    width: 100%; max-width: 450px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-left: 5px solid var(--primary); font-size: 0.95rem; line-height: 1.5;
-  }
-  .info-block.intrigue {
-    border-left-color: #ff9800; background: #fff3e0; color: #e65100;
-  }
+  .info-block { background: #fff; border-radius: 15px; padding: 15px 20px; margin-bottom: 15px; width: 100%; max-width: 450px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); font-size: 0.95rem; line-height: 1.5; }
+  .info-block.intrigue { border-left-color: #ff9800; background: #fff3e0; color: #e65100; }
   .info-block h3 { margin-bottom: 8px; font-size: 1.1rem; color: inherit; }
 
-  /* ЭКО-ФИНАЛ (Победная заставка с фактами) */
+  .author-sign { font-size: 0.75rem; color: #666; margin-top: 15px; margin-bottom: 10px; text-align: center; line-height: 1.4; }
+  .author-sign b { color: var(--primary); }
+
+  .particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 1000; }
+
+  /* --- ЭКО-ЗАСТАВКА С ФАКТАМИ --- */
   .eco-facts-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; height: 100%; position: fixed; top: 0; left: 0;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     z-index: 400; padding: 20px; overflow-y: auto;
   }
-  .eco-facts-screen h1 { color: #1b5e20; margin-bottom: 10px; text-shadow: 2px 2px 0 #fff; }
-  .eco-facts-screen p { color: #2e7d32; font-weight: 600; margin-bottom: 20px; }
+  .eco-facts-screen.show { display: flex; }
   
-  /* Карточка с фактом в эко-стиле */
+  .eco-facts-screen h1 { color: #1b5e20; margin-bottom: 10px; text-shadow: 2px 2px 0 #fff; }
+  .eco-facts-screen p { color: #2e7d32; font-weight: 600; margin-bottom: 20px; text-align: center;}
+  
   .eco-fact-card {
     background: #fff; border-radius: 20px; padding: 25px 20px;
-    width: 100%; max-width: 450px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    width: 100%; max-width: 480px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     border-top: 6px solid #4caf50; position: relative;
-    min-height: 250px; display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 280px; display: flex; flex-direction: column; justify-content: space-between;
     margin-bottom: 25px; text-align: left;
   }
-  .eco-fact-header {
-    font-size: 1.1rem; font-weight: 800; color: #2e7d32; margin-bottom: 15px;
-    display: flex; justify-content: space-between; align-items: center;
+  
+  .eco-fact-header { font-size: 1.1rem; font-weight: 800; color: #2e7d32; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+  .eco-fact-counter { background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; }
+  .eco-fact-text { font-size: 1rem; line-height: 1.5; font-weight: 600; color: #37474f; flex-grow: 1; margin-bottom: 15px; }
+
+  .fact-source-link {
+    display: inline-block; padding: 8px 16px; background: #e8f5e9; color: #2e7d32;
+    text-decoration: none; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+    border: 1px solid #a5d6a7; transition: all 0.2s; align-self: flex-start;
   }
-  .eco-fact-counter {
-    background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;
-  }
-  .eco-fact-text {
-    font-size: 1rem; line-height: 1.5; font-weight: 600; color: #37474f;
-    flex-grow: 1;
-  }
+  .fact-source-link:hover { background: #c8e6c9; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(46,125,50,0.2); }
 
   .btn-eco-next {
     background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; border: 3px solid #fff; 
@@ -175,46 +164,71 @@
   }
   .btn-eco-next:active { transform: scale(0.98); }
 
-  /* ЭКО-ФИНАЛ (Победная заставка с кубком) */
+  /* --- ЭКРАН ПРИЗЫВА --- */
+  .eco-call-screen {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
+    background: linear-gradient(135deg, #a5d6a7 0%, #4caf50 100%);
+    z-index: 450; padding: 20px; text-align: center;
+    animation: fadeIn 0.8s ease-out;
+  }
+  .eco-call-screen.show { display: flex; }
+
+  .call-text {
+    color: #fff; max-width: 480px; 
+    margin-bottom: 30px; background: rgba(255,255,255,0.15); padding: 35px 25px;
+    border-radius: 24px; backdrop-filter: blur(8px); border: 2px solid rgba(255,255,255,0.4);
+    text-align: left;
+  }
+  .typography-title { display: block; font-size: 1.6rem; font-weight: 900; line-height: 1.2; text-align: center; margin-bottom: 25px; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.3); letter-spacing: 0.5px; }
+  .typography-body-1 { display: block; font-size: 1rem; font-weight: 500; line-height: 1.6; margin-bottom: 20px; text-indent: 15px; }
+  .typography-italic { display: block; font-size: 1.05rem; font-style: italic; font-weight: 500; color: #e8f5e9; margin-bottom: 25px; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .typography-action { display: block; font-size: 1.15rem; font-weight: 800; margin-bottom: 25px; padding-left: 15px; border-left: 4px solid #ffca28; color: #fff; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .typography-action b { color: #ffca28; }
+  .typography-final { display: block; font-size: 1.1rem; font-weight: 700; line-height: 1.5; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); }
+
+  @keyframes pulseBtn {
+    0% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    50% { transform: scale(1.05); box-shadow: 0 12px 25px rgba(0,0,0,0.3); }
+    100% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+  }
+
+  .btn-call-next {
+    background: #fff; color: #2e7d32; border: 3px solid #2e7d32; 
+    padding: 18px 45px; font-size: 1.2rem; font-weight: 900; border-radius: 30px; cursor: pointer; 
+    transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
+    animation: pulseBtn 2s infinite;
+  }
+  .btn-call-next:hover { background: #e8f5e9; transform: translateY(-3px) scale(1.02); }
+  .btn-call-next:active { transform: scale(0.98); }
+
+  /* --- ЭКО-ФИНАЛ (Кубок) --- */
   .eco-final-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; height: 100%; position: fixed; top: 0; left: 0;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     z-index: 500; animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  .eco-final-screen .medal {
-    font-size: 7rem; margin-bottom: 10px; animation: bounce 2s infinite;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
-  }
-  .eco-final-screen .final-title {
-    font-size: 2.4rem; color: #1b5e20; text-shadow: 2px 2px 0 #fff, 0 4px 10px rgba(0,0,0,0.1);
-    margin-bottom: 5px; line-height: 1.1; font-weight: 900; text-align: center;
-  }
-  .eco-final-screen .final-subtitle {
-    font-size: 1.2rem; font-weight: 800; color: #2e7d32; margin-bottom: 20px; 
-    background: #fff; padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(46,125,50,0.15); text-align: center;
-  }
-  .eco-final-screen .final-text {
-    color: #388e3c; font-size: 1.05rem; margin-bottom: 30px; font-weight: 600; line-height: 1.4; max-width: 350px; text-align: center;
-  }
-  .eco-final-screen .btn-restart {
-    background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; border: 3px solid #fff; padding: 15px 40px; 
-    font-size: 1.2rem; font-weight: 900; border-radius: 30px; cursor: pointer; 
-    box-shadow: 0 8px 20px rgba(67,160,71,0.4); transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
-  }
+  .eco-final-screen.show { display: flex; }
+  
+  .eco-final-screen .medal { font-size: 7rem; margin-bottom: 10px; animation: bounce 2s infinite; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
+  .eco-final-screen .final-title { font-size: 2.4rem; color: #1b5e20; text-shadow: 2px 2px 0 #fff, 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 5px; line-height: 1.1; font-weight: 900; text-align: center; }
+  .eco-final-screen .final-subtitle { font-size: 1.2rem; font-weight: 800; color: #2e7d32; margin-bottom: 20px; background: #fff; padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(46,125,50,0.15); text-align: center; }
+  .eco-final-screen .final-text { color: #388e3c; font-size: 1.05rem; margin-bottom: 30px; font-weight: 600; line-height: 1.4; max-width: 350px; text-align: center; }
+  .eco-final-screen .btn-restart { background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; border: 3px solid #fff; padding: 15px 40px; font-size: 1.2rem; font-weight: 900; border-radius: 30px; cursor: pointer; box-shadow: 0 8px 20px rgba(67,160,71,0.4); transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
   .eco-final-screen .btn-restart:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(67,160,71,0.5); }
   .eco-final-screen .eco-icons { margin-top: 30px; font-size: 1.5rem; letter-spacing: 10px; opacity: 0.7; }
-  
+  .eco-author { color: #388e3c; font-size: 0.8rem; font-weight: 600; margin-top: 20px; text-align: center; }
+
+  /* Листики */
   .leaf { position: absolute; font-size: 2rem; opacity: 0.15; pointer-events: none; animation: floatLeaf 8s infinite linear; }
   @keyframes floatLeaf { 0% { transform: translateY(-10vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
   @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
 
-  .author-sign {
-    font-size: 0.75rem; color: #666; margin-top: 15px; margin-bottom: 10px; text-align: center; line-height: 1.4;
-  }
-  .author-sign b { color: var(--primary); }
-  .eco-author { color: #388e3c; font-size: 0.8rem; font-weight: 600; margin-top: 20px; text-align: center; }
+  .eco-fact-card.pop { animation: cardPop 0.4s ease-out; }
+  @keyframes cardPop { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 </style>
 </head>
 <body id="body">
@@ -255,7 +269,7 @@
 
   <div class="info-block intrigue">
     <h3>🎁 Интрига!</h3>
-    Если ты выиграешь, то узнаешь <b>6 секретных фактов о нашей стране</b>! А если проиграешь — попробуешь еще раз, чтобы раскрыть тайну. Сможешь дойти до конца?
+    Если ты выиграешь, то узнаешь <b>6 интересных фактов о нашей стране</b>! А если проиграешь — попробуешь еще раз, чтобы раскрыть тайну. Сможешь дойти до конца?
   </div>
 
   <button class="btn-start" onclick="startGame()">Играть!</button>
@@ -293,8 +307,8 @@
   <button class="btn-next-quiz" id="btnNextQuiz" onclick="closeQuiz()">Продолжить игру →</button>
 </div>
 
-<!-- ЭКО-ЗАСТАВКА С ФАКТАМИ (Скрыта) -->
-<div class="eco-facts-screen" id="ecoFactsScreen" style="display:none;">
+<!-- ЭКО-ЗАСТАВКА С ФАКТАМИ -->
+<div class="eco-facts-screen" id="ecoFactsScreen">
   <div class="leaf" style="left: 10%; animation-delay: 0s;">🍃</div>
   <div class="leaf" style="left: 30%; animation-delay: 2s;">🌿</div>
   <div class="leaf" style="left: 60%; animation-delay: 4s;">🍃</div>
@@ -304,19 +318,44 @@
   <h1>🎉 Победа!</h1>
   <p>Ты спас дом и узнал много нового!<br>Осталось энергии: <b id="finalEnergy">0</b>.</p>
   
-  <div class="eco-fact-card">
+  <div class="eco-fact-card" id="factCard">
     <div class="eco-fact-header">
-      <span>🌟 Секретный факт о Беларуси</span>
+      <span>🌟 Интересный факт о Беларуси</span>
       <span class="eco-fact-counter" id="factCounter">1 / 6</span>
     </div>
     <div class="eco-fact-text" id="factText"></div>
+    
+    <a href="#" id="factSource" class="fact-source-link" target="_blank" rel="noopener">Узнать больше →</a>
   </div>
 
   <button class="btn-eco-next" id="btnNextFact" onclick="nextFact()">Следующий факт →</button>
 </div>
 
-<!-- ЭКО-ФИНАЛ (Скрыт) -->
-<div class="eco-final-screen" id="ecoFinalScreen" style="display:none;">
+<!-- ЭКРАН ПРИЗЫВА -->
+<div class="eco-call-screen" id="ecoCallScreen">
+  <div class="leaf" style="left: 10%; animation-delay: 0s;">🍃</div>
+  <div class="leaf" style="left: 80%; animation-delay: 2s;">🌿</div>
+  <div class="leaf" style="left: 50%; animation-delay: 4s;">🌱</div>
+  
+  <div class="call-text">
+    <span class="typography-title">Беларусь — это<br>чистая и прекрасная страна!</span>
+    
+    <span class="typography-body-1">У нас есть уникальные болота, глубокие озера, древние леса и источники чистой энергии, которые не загрязняют воздух. Всё это — наше общее богатство.</span>
+    
+    <span class="typography-italic">Но чтобы эта красота оставалась такой же первозданной, важно беречь её каждый день.</span>
+    
+    <div class="typography-action">
+      Начни с малого: <b>выключи свет</b>, выходя из комнаты, <b>закрой кран</b>, когда чистишь зубы, и <b>не оставляй зарядку</b> в розетке.
+    </div>
+
+    <span class="typography-final">Помни: даже маленький шаг каждого из нас — это большой вклад в будущее нашей страны.<br>Давайте сохраним эту красоту для наших детей и внуков!</span>
+  </div>
+
+  <button class="btn-call-next" onclick="showFinalScreen()">Получить звание героя 🏆</button>
+</div>
+
+<!-- ЭКО-ФИНАЛ (Кубок) -->
+<div class="eco-final-screen" id="ecoFinalScreen">
   <div class="leaf" style="left: 10%; animation-delay: 0s;">🍃</div>
   <div class="leaf" style="left: 30%; animation-delay: 2s;">🌿</div>
   <div class="leaf" style="left: 60%; animation-delay: 4s;">🍃</div>
@@ -405,12 +444,36 @@ const PAIRS = [
 ];
 
 const SECRET_FACTS = [
-  "Знаешь ли ты, что Белорусская АЭС в городе Островец вырабатывает столько энергии, что её хватило бы, чтобы вскипятить 100 миллионов чайников одновременно? Представляешь, какой это масштаб! И при этом она не дымит, как огромный костёр, — значит, воздух в нашей стране остаётся чистым. Это настоящий энергетический гигант!",
-  "В Витебской области есть болото Ельня — оно такое огромное, что его видно даже из космоса! Оно работает как гигантский пылесос: всасывает грязь из воздуха и делает его чистым. А ещё оно сохраняет воду, чтобы наши реки не пересыхали. Обычное болото — а какой супергерой для всей планеты!",
-  "В Беларуси электричество стоит около 25 копеек за киловатт-час. А вот в Германии — в 5 раз дороже! Представляешь, наша семья платит за свет в 5 раз меньше, чем немецкая. Но знаешь, в чём секрет? Наши ресурсы — это наше богатство. Мы не тратим их зря, чтобы они остались и нашим детям, и внукам!",
-  "В деревне Грабники под Новогрудком стоят самые высокие ветряки в Беларуси — выше 20-этажного дома! Когда дует ветер, их лопасти крутятся и дают электричество для тысяч домов. Представляешь, ветер может включать лампочки в твоей комнате! И для этого не нужно сжигать уголь или газ — только сила природы!",
-  "Знаешь ли ты, что Беловежская пуща — это самый древний лес в Европе? Некоторым деревьям там больше 300 лет! Леса — это 'лёгкие' нашей планеты: они очищают воздух, которым мы дышим, и сохраняют воду для рек. В Беларуси лесами покрыто почти 40% территории — представь, почти половина страны — это зелёное море!",
-  "Знаешь ли ты, что в Минске есть настоящий волшебный завод? Он превращает обычный мусор в электричество и тепло! Вместо того чтобы валить отходы на огромные свалки, их сжигают в специальной печи при очень высокой температуре. Представляешь, фантик от конфеты, старая тетрадка или коробка от сока могут дать свет! Когда ты сортируешь мусор, ты тоже помогаешь этому волшебству случиться!"
+  {
+    text: "Знаешь ли ты, что Беловежская пуща — это самый древний лес в Европе? Некоторым деревьям там больше 300 лет! Леса — это 'лёгкие' нашей планеты: они очищают воздух, которым мы дышим, и сохраняют воду для рек. В Беларуси лесами покрыто почти 40% территории — представь, почти половина страны — это зелёное море!",
+    source: "https://npbp.by/",
+    sourceName: "Национальный парк «Беловежская пуща»"
+  },
+  {
+    text: "В Витебской области есть болото Ельня — оно такое огромное, что его видно даже из космоса! Оно работает как гигантский пылесос: всасывает грязь из воздуха и делает его чистым. А ещё оно сохраняет воду, чтобы наши реки не пересыхали. Обычное болото — а какой супергерой для всей планеты!",
+    source: "https://www.belarus.by/ru/press-center/photo/landshaftnyj-zakaznik-elnja-unikalnoe-boloto-evropy-i-odno-iz-samyx-chistyx-mest-na-planete--v-oktjabrskix-kraskax_ti_2827_0000058202.html",
+    sourceName: "Belarus.by (Болото Ельня)"
+  },
+  {
+    text: "Знаешь ли ты, что в Беларуси есть «Голубые озера»? Самое известное из них — озеро Болдук. Вода в нем настолько чистая и прозрачная, что кажется, будто смотришь сквозь хрусталь! А из-за особого состава воды и дна некоторые озера меняют цвет: одно может быть бирюзовым, другое — изумрудно-зеленым. Представляешь, целая палитра красок под открытым небом!",
+    source: "https://www.belarus.by/ru/press-center/photo/priroda-belarusi-landshaftnyj-zakaznik-golubye-ozera_i_42580.html",
+    sourceName: "Belarus.by (Голубые озера)"
+  },
+  {
+    text: "Знаешь ли ты, что Белорусская АЭС в городе Островец вырабатывает столько энергии, что её хватило бы, чтобы вскипятить 100 миллионов чайников одновременно? Представляешь, какой это масштаб! И при этом она не дымит, как огромный костёр, — значит, воздух в нашей стране остаётся чистым. Это настоящий энергетический гигант!",
+    source: "https://belaes.by/ru/novosti/item/5142-belorusskaya-aes-vyrabotala-50-mlrd-kvtch-elektroenergii.html",
+    sourceName: "Официальный сайт Белорусской АЭС"
+  },
+  {
+    text: "Знаешь ли ты, что в Беларуси делают собственные электромобили? На заводе «БЕЛДЖИ» под Минском начали выпускать современные электрокары, которые не используют бензин и не загрязняют воздух. Представляешь, обычная машина выпускает дым, а эта — только чистый воздух! Теперь и у нас есть свой экологичный транспорт.",
+    source: "https://belgee.by/",
+    sourceName: "Официальный сайт завода «БЕЛДЖИ»"
+  },
+  {
+    text: "В Беларуси электричество стоит около 25 копеек за киловатт-час. А вот в Германии — в 5 раз дороже! Представляешь, наша семья платит за свет в 5 раз меньше, чем немецкая. Но знаешь, в чём секрет? Наши ресурсы — это наше богатство. Мы не тратим их зря, чтобы они остались и нашим детям, и внукам!",
+    source: "https://www.government.by/sites/default/files/resolution/2026-02/93.pdf",
+    sourceName: "Постановление Совета Министров РБ (Тарифы)"
+  }
 ];
 
 const BONUS_CARD = { type: 'bonus', emoji: '☀️', text: 'Солнечная панель', effect: 20, fact: 'Бонус! +20 энергии!' };
@@ -444,8 +507,9 @@ function startGame() {
   $('startModal').classList.remove('show');
   $('loseModal').classList.remove('show');
   $('quizModal').classList.remove('show');
-  $('ecoFactsScreen').style.display = 'none';
-  $('ecoFinalScreen').style.display = 'none';
+  $('ecoFactsScreen').classList.remove('show');
+  $('ecoCallScreen').classList.remove('show');
+  $('ecoFinalScreen').classList.remove('show');
   body.classList.remove('danger');
   
   deck = [];
@@ -730,11 +794,17 @@ function endGame(isWin) {
     playSound('win');
     $('finalEnergy').textContent = energy;
     currentFactIndex = 0;
-    $('factCounter').textContent = '1 / 6';
-    $('factText').textContent = SECRET_FACTS[0];
+    
+    // Инициализируем первый факт
+    const fact = SECRET_FACTS[0];
+    $('factText').textContent = fact.text;
+    $('factCounter').textContent = '1 / ' + SECRET_FACTS.length;
+    $('factSource').href = fact.source;
+    $('factSource').textContent = 'Узнать больше: ' + fact.sourceName + ' →';
     $('btnNextFact').textContent = 'Следующий факт →';
     $('btnNextFact').style.background = 'linear-gradient(135deg, #66bb6a, #43a047)';
-    $('ecoFactsScreen').style.display = 'flex';
+    
+    $('ecoFactsScreen').classList.add('show');
   } else {
     playSound('bad');
     $('loseModal').classList.add('show');
@@ -745,18 +815,34 @@ function nextFact() {
   currentFactIndex++;
   
   if (currentFactIndex >= SECRET_FACTS.length) {
-    $('ecoFactsScreen').style.display = 'none';
-    $('ecoFinalScreen').style.display = 'flex';
+    $('ecoFactsScreen').classList.remove('show');
+    $('ecoCallScreen').classList.add('show');
     return;
   }
   
-  $('factText').textContent = SECRET_FACTS[currentFactIndex];
-  $('factCounter').textContent = (currentFactIndex + 1) + ' / 6';
+  const fact = SECRET_FACTS[currentFactIndex];
+  
+  const card = $('factCard');
+  card.classList.remove('pop');
+  void card.offsetWidth; 
+  card.classList.add('pop');
+  
+  $('factText').textContent = fact.text;
+  $('factCounter').textContent = (currentFactIndex + 1) + ' / ' + SECRET_FACTS.length;
+  
+  const sourceLink = $('factSource');
+  sourceLink.href = fact.source;
+  sourceLink.textContent = 'Узнать больше: ' + fact.sourceName + ' →';
   
   if (currentFactIndex === SECRET_FACTS.length - 1) {
-    $('btnNextFact').textContent = 'Завершить игру 🏁';
+    $('btnNextFact').textContent = 'Дальше →';
     $('btnNextFact').style.background = 'linear-gradient(135deg, #ffb300, #ff8f00)';
   }
+}
+
+function showFinalScreen() {
+  $('ecoCallScreen').classList.remove('show');
+  $('ecoFinalScreen').classList.add('show');
 }
 
 let audioCtx;
