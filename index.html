@@ -157,6 +157,30 @@
   }
   .btn-eco-next:active { transform: scale(0.98); }
 
+  /* --- ЭКРАН ПОБЕДЫ (НОВЫЙ) --- */
+  .victory-screen {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100vh; position: fixed; top: 0; left: 0;
+    background: linear-gradient(135deg, #a5d6a7 0%, #4caf50 100%);
+    z-index: 390; padding: 20px; text-align: center;
+    animation: fadeIn 0.8s ease-out;
+  }
+  .victory-screen.show { display: flex; }
+  
+  .victory-screen .trophy { font-size: 8rem; margin-bottom: 20px; animation: bounce 2s infinite; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
+  .victory-screen h1 { color: #fff; font-size: 2.2rem; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  .victory-screen p { color: #e8f5e9; font-size: 1.2rem; margin-bottom: 15px; font-weight: 600; }
+  .victory-screen .energy-left { color: #fff; font-size: 1rem; margin-bottom: 30px; opacity: 0.9; }
+
+  .btn-victory-next {
+    background: #fff; color: #2e7d32; border: 4px solid #2e7d32; 
+    padding: 20px 50px; font-size: 1.3rem; font-weight: 900; border-radius: 40px; cursor: pointer; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.2s; text-transform: uppercase;
+    animation: pulseBtn 2s infinite;
+  }
+  .btn-victory-next:hover { transform: translateY(-5px) scale(1.02); }
+  .btn-victory-next:active { transform: scale(0.95); }
+
   /* --- ЭКРАН ПРИЗЫВА --- */
   .eco-call-screen {
     display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -179,12 +203,6 @@
   .typography-action { display: block; font-size: 1.15rem; font-weight: 800; margin-bottom: 25px; padding-left: 15px; border-left: 4px solid #ffca28; color: #fff; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
   .typography-action b { color: #ffca28; }
   .typography-final { display: block; font-size: 1.1rem; font-weight: 700; line-height: 1.5; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); }
-
-  @keyframes pulseBtn {
-    0% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-    50% { transform: scale(1.05); box-shadow: 0 12px 25px rgba(0,0,0,0.3); }
-    100% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-  }
 
   .btn-call-next {
     background: #fff; color: #2e7d32; border: 3px solid #2e7d32; 
@@ -222,6 +240,12 @@
 
   .eco-fact-card.pop { animation: cardPop 0.4s ease-out; }
   @keyframes cardPop { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+
+  @keyframes pulseBtn {
+    0% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    50% { transform: scale(1.05); box-shadow: 0 12px 25px rgba(0,0,0,0.3); }
+    100% { transform: scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+  }
 
   /* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
   @media (max-width: 600px) {
@@ -302,6 +326,10 @@
       min-height: auto;
       padding: 15px;
     }
+
+    .victory-screen h1 { font-size: 1.8rem; }
+    .victory-screen .trophy { font-size: 6rem; }
+    .btn-victory-next { padding: 15px 30px; font-size: 1.1rem; width: 90%; }
   }
 </style>
 </head>
@@ -379,6 +407,16 @@
   </div>
   
   <button class="btn-next-quiz" id="btnNextQuiz" onclick="closeQuiz()">Продолжить игру →</button>
+</div>
+
+<!-- ЭКРАН ПОБЕДЫ -->
+<div class="victory-screen" id="victoryScreen">
+  <div class="trophy">🏆</div>
+  <h1>Энергия спасена!</h1>
+  <p>Ты собрал все пары и не дал энергии иссякнуть!</p>
+  <div class="energy-left">Осталось энергии: <b id="victoryEnergy">0</b></div>
+  
+  <button class="btn-victory-next" onclick="showFacts()">Узнать интересные факты</button>
 </div>
 
 <!-- ЭКО-ЗАСТАВКА С ФАКТАМИ -->
@@ -470,7 +508,7 @@ const PAIRS = [
   },
   { 
     bad: { emoji: '🪟', text: 'Окно открыто зимой' }, 
-    good: { emoji: '🚪', text: 'Закрыл окно' }, 
+    good: { emoji: '🪟', text: 'Закрыл окно' }, 
     question: 'Что произойдет, если зимой оставить окно открытым на 10 минут?',
     options: [ { text: 'Ничего страшного', correct: false }, { text: 'Из дома уйдет тепло, обогреватель будет работать дольше', correct: true } ],
     fact: 'Открытое окно зимой выпускает тепло, на нагрев которого тратится энергия. Чтобы вернуть комфортную температуру, обогревателю придется работать в 2 раза дольше. Береги тепло — проветривай быстро и закрывай окна!',
@@ -505,7 +543,7 @@ const PAIRS = [
     failMsg: 'Телевизор работал зря... Зато теперь ты знаешь, куда уходит энергия!'
   },
   { 
-    bad: { emoji: '🧺', text: 'Стирка на полбака' }, 
+    bad: { emoji: '👕', text: 'Стирка на полбака' }, 
     good: { emoji: '🧺', text: 'Стирка полного бака' }, 
     question: 'Что выгоднее — стирать каждый день по чуть-чуть или накопить вещи и постирать один раз?',
     options: [ { text: 'По чуть-чуть', correct: false }, { text: 'Один раз полный бак', correct: true } ],
@@ -567,6 +605,7 @@ function startGame() {
   $('startModal').classList.remove('show');
   $('loseModal').classList.remove('show');
   $('quizModal').classList.remove('show');
+  $('victoryScreen').style.display = 'none';
   $('ecoFactsScreen').classList.remove('show');
   $('ecoCallScreen').classList.remove('show');
   $('ecoFinalScreen').classList.remove('show');
@@ -852,21 +891,26 @@ function endGame(isWin) {
   
   if (isWin) {
     playSound('win');
-    $('finalEnergy').textContent = energy;
-    currentFactIndex = 0;
-    
-    // Инициализируем первый факт
-    const fact = SECRET_FACTS[0];
-    $('factText').textContent = fact.text;
-    $('factCounter').textContent = '1 / ' + SECRET_FACTS.length;
-    $('btnNextFact').textContent = 'Следующий факт →';
-    $('btnNextFact').style.background = 'linear-gradient(135deg, #66bb6a, #43a047)';
-    
-    $('ecoFactsScreen').classList.add('show');
+    $('victoryEnergy').textContent = energy;
+    $('victoryScreen').style.display = 'flex';
   } else {
     playSound('bad');
     $('loseModal').classList.add('show');
   }
+}
+
+function showFacts() {
+  $('victoryScreen').style.display = 'none';
+  $('ecoFactsScreen').classList.add('show');
+  $('finalEnergy').textContent = energy;
+  
+  // Инициализация первого факта
+  currentFactIndex = 0;
+  const fact = SECRET_FACTS[0];
+  $('factText').textContent = fact.text;
+  $('factCounter').textContent = '1 / ' + SECRET_FACTS.length;
+  $('btnNextFact').textContent = 'Следующий факт →';
+  $('btnNextFact').style.background = 'linear-gradient(135deg, #66bb6a, #43a047)';
 }
 
 function nextFact() {
